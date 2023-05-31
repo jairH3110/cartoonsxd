@@ -1,34 +1,35 @@
+#manifest
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cartoons-deployment
+  name: {model_name}-deployment
 spec:
   selector:
     matchLabels:
-      app: cartoons-server
-  replicas: 2
+      app: {model_name}-server
+  replicas: {nodo}
   template:
     metadata:
       labels:
-        app: cartoons-server
+        app: {model_name}-server
     spec:
       containers:
-      - name: cartoons-container
+      - name: {model_name}-container
         #image: gcr.io/tensorflow-serving/resnet 
-        image: docker.io/jairdelfin/cartoons:9f2efa753af6194c074f5a40687f9ff60bbedfad
+        image: docker.io/{docker_user}/{model_name}:{github.sha}
         ports:
-        - containerPort: 8080
-
+        - containerPort: 80
+---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    run: cartoons-service
-  name: cartoons-service
+    run: {model_name}-service
+  name: {model_name}-service
 spec:
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 80
+    targetPort: 80
   selector:
-    app: cartoons-server
+    app: {model_name}-server
   type: LoadBalancer
